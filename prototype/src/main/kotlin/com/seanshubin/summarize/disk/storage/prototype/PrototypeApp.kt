@@ -39,24 +39,21 @@ object PrototypeApp {
         println(formatSummary(summary))
     }
 
-    private fun loadSummary(path: Path): Summary {
-        return if (Files.isDirectory(path)) {
+    private fun loadSummary(path: Path): Summary =
+        if (Files.isDirectory(path)) {
             loadSummaryFromDir(path)
         } else {
             loadSummaryFromFile(path)
         }
-    }
 
     private fun loadSummaryFromDir(dir: Path): Summary {
-        val summaries = listFiles(dir)
-            .map(::loadSummary)
-        val summary = Summary.combineDir(dir, summaries)
-        return summary
+        val summaries = listFiles(dir).map(::loadSummary)
+        return Summary.combineDir(dir, summaries)
     }
 
     private fun loadSummaryFromFile(file: Path): Summary {
         val size = Files.size(file)
-        return Summary(file, 1, 0, size)
+        return Summary(file, size, 1, 0)
     }
 
     private fun timeTaken(f: () -> Unit) {
@@ -77,11 +74,7 @@ object PrototypeApp {
     }
 
     private fun formatSummary(summary: Summary): String {
-        val sizeString = String.format("size:%,13d", summary.size)
-        val filesString = String.format("files:%5d", summary.fileQuantity)
-        val dirsString = String.format("dirs:%4d", summary.dirQuantity)
-        val name = "name:${summary.path}"
-        return "$sizeString | $filesString | $dirsString | $name"
+        return "${summary.size} ${summary.path} files:${summary.files} dirs:${summary.dirs}"
     }
 
     private fun listFiles(dir: Path): List<Path> =
@@ -90,5 +83,29 @@ object PrototypeApp {
     private fun relativizeSummary(base: Path): (Summary) -> Summary = { summary: Summary ->
         val relativePath = base.relativize(summary.path)
         summary.copy(path = relativePath)
+    }
+
+    data class Summary(
+        val path: Path,
+        val size: Long,
+        val files: Int,
+        val dirs: Int
+    ) : Comparable<Summary> {
+        override fun compareTo(other: Summary): Int =
+            this.size.compareTo(other.size)
+
+        companion object {
+            fun combineDir(path: Path, summaries: List<Summary>): Summary {
+                var newFileQuantity = 0
+                var newDirQuantity = 1
+                var newSize = 0L
+                summaries.forEach { summary ->
+                    newFileQuantity += summary.files
+                    newDirQuantity += summary.dirs
+                    newSize += summary.size
+                }
+                return Summary(path, newSize, newFileQuantity, newDirQuantity)
+            }
+        }
     }
 }
