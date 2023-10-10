@@ -1,0 +1,38 @@
+{
+  reportDir domain/target/detangled
+  searchPaths
+  [
+    ./domain/target/summarize-disk-storage-domain-0.1.0.jar
+  ]
+  level 2
+  startsWith
+  {
+    include
+    [
+      [
+        com
+        seanshubin
+        summarize
+        disk
+        storage
+      ]
+    ]
+    exclude []
+    drop
+    [
+      [
+        com
+        seanshubin
+        summarize
+        disk
+        storage
+      ]
+    ]
+  }
+  ignoreFiles []
+  canFailBuild true
+  ignoreJavadoc true
+  logTiming true
+  logEffectiveConfiguration true
+  allowedInCycle domain/detangler-allowed-in-cycle.txt
+}

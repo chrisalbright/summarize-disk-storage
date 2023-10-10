@@ -1,0 +1,54 @@
+{
+  prefix [com seanshubin]
+  name [summarize disk storage]
+  description 'Summarize Disk Storage'
+  version 0.1.0
+  language kotlin
+  developer {
+    name 'Sean Shubin'
+    githubName SeanShubin
+    mavenUserName SeanShubin
+    organization 'Sean Shubin'
+    url http://seanshubin.com/
+  }
+  dependencies {
+    stdlib {
+      group org.jetbrains.kotlin
+      artifact kotlin-stdlib-jdk8
+    }
+    coroutines {
+      group org.jetbrains.kotlinx
+      artifact kotlinx-coroutines-core
+    }
+    test {
+      group org.jetbrains.kotlin
+      artifact kotlin-test-junit
+      scope test
+    }
+    arrow {
+        group    io.arrow-kt
+        artifact arrow-core
+    }
+    jackson {
+        group com.fasterxml.jackson.module
+        artifact jackson-module-kotlin
+    }
+    jackson-time {
+        group com.fasterxml.jackson.datatype
+        artifact jackson-datatype-jsr310
+    }
+  }
+  global [ stdlib test ]
+  modules {
+    console         [ domain ]
+    domain          [ ]
+    prototype       [ ]
+  }
+  detangler [domain]
+  consoleEntryPoint {
+    console   com.seanshubin.summarize.disk.storage.console.EntryPoint
+    prototype com.seanshubin.summarize.disk.storage.prototype.PrototypeApp
+  }
+  javaVersion 18
+  deployableToMavenCentral true
+}
