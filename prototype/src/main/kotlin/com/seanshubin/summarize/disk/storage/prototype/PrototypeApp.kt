@@ -17,26 +17,20 @@ object PrototypeApp {
     }
 
     private fun summarizeDiskStorage(path: Path) {
-        if (Files.isDirectory(path)) {
-            summarizeDiskStorageDir(path)
+        val paths = if (Files.isDirectory(path)) {
+            listFiles(path)
         } else {
-            summarizeDiskStorageFile(path)
+            listOf(path)
         }
+        summarizeDiskStoragePaths(paths)
     }
 
-    private fun summarizeDiskStorageDir(dir: Path) {
-        val dirContents = listFiles(dir)
-        dirContents
+    private fun summarizeDiskStoragePaths(paths: List<Path>) {
+        paths
             .map(::loadSummary)
-            .map(relativizeSummary(dir))
             .sortedDescending()
             .map(::formatSummary)
             .forEach(::println)
-    }
-
-    private fun summarizeDiskStorageFile(file: Path) {
-        val summary = loadSummaryFromFile(file)
-        println(formatSummary(summary))
     }
 
     private fun loadSummary(path: Path): Summary =
@@ -79,11 +73,6 @@ object PrototypeApp {
 
     private fun listFiles(dir: Path): List<Path> =
         Files.list(dir).use { it.toList() }
-
-    private fun relativizeSummary(base: Path): (Summary) -> Summary = { summary: Summary ->
-        val relativePath = base.relativize(summary.path)
-        summary.copy(path = relativePath)
-    }
 
     data class Summary(
         val path: Path,
