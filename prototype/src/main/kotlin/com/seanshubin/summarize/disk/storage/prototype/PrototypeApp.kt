@@ -91,8 +91,7 @@ object PrototypeApp {
         val files: Int,
         val dirs: Int
     ) : Comparable<Summary> {
-        override fun compareTo(other: Summary): Int =
-            this.size.compareTo(other.size)
+        override fun compareTo(other: Summary): Int = size.compareTo(other.size)
 
         companion object {
             fun combineDir(path: Path, summaries: List<Summary>): Summary {
