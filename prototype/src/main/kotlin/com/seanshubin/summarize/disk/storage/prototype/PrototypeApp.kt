@@ -67,9 +67,8 @@ object PrototypeApp {
         return "$hours:$minutes:$seconds"
     }
 
-    private fun formatSummary(summary: Summary): String {
-        return "${summary.size} ${summary.path} files:${summary.files} dirs:${summary.dirs}"
-    }
+    private fun formatSummary(summary: Summary): String =
+        "${summary.size} ${summary.path} files:${summary.files} dirs:${summary.dirs}"
 
     private fun listFiles(dir: Path): List<Path> =
         Files.list(dir).use { it.toList() }
